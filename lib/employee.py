@@ -1,6 +1,7 @@
 # lib/employee.py
 from __init__ import CURSOR, CONN
 from department import Department
+from review import Review
 
 class Employee:
 
@@ -187,4 +188,29 @@ class Employee:
 
     def reviews(self):
         """Return list of reviews associated with current employee"""
+        from review import Review
+        sql = """
+            SELECT * FROM reviews
+            WHERE employee_id = ?
+        """
+        CURSOR.execute(sql, (self.id,),)
+
+        rows = CURSOR.fetchall()
+        return [
+            Review.instance_from_db(row) for row in rows
+        ]
+    
+    # def reviews(self):
+        # """Get associated Review instances that have been persisted to the database."""
+        # # Retrieve reviews associated with the current employee_id
+        # sql = """
+        #     SELECT *
+        #     FROM reviews
+        #     WHERE employee_id = ?
+        # """
+        # rows = CURSOR.execute(sql, (self.id,)).fetchall()
+
+        # # Create Review instances from the retrieved rows
+        # return [Review.instance_from_db(row) for row in rows]
         pass
+from review import Review
